@@ -1,0 +1,13 @@
+[package]
+name = "application"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+eframe = "0.22.0"
+egui = "0.22.0"
+app_state = { path = "../app_state" }
+cpal = "0.15.2"
+ringbuffer = "0.14.2"
