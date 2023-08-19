@@ -3,14 +3,13 @@ use app_state::AppState;
 use cpal::traits::StreamTrait;
 
 use egui::plot::{Legend, Line, Plot};
-use egui::Response;
 
 #[no_mangle]
 pub fn update_gui(state: &mut AppState, ctx: &egui::Context, _frame: &mut eframe::Frame) {
     ctx.request_repaint();
 
     egui::CentralPanel::default().show(ctx, |ui| {
-        ui.heading("Hello 123445");
+        ui.heading("Hello 1234");
         ui.horizontal(|ui| {
             ui.checkbox(&mut state.draw, "Draw?");
             ui.checkbox(&mut state.record, "Record");

@@ -5,6 +5,7 @@ use std::f64::consts::PI;
 /// Number of samples in the wave table
 const WAVE_TABLE_SIZE: usize = 64;
 
+#[derive(Copy, Clone)]
 pub struct WavetableOscillator {
     /// Number of samples to generate per second
     sample_rate: u32,
@@ -17,6 +18,12 @@ pub struct WavetableOscillator {
 
     ///
     index_increment: f64,
+}
+
+impl crate::Sampler for WavetableOscillator {
+    fn sample(&mut self) -> f64 {
+        self.get_sample()
+    }
 }
 
 impl WavetableOscillator {

@@ -1,2 +1,2 @@
 [workspace]
-members = ["application", "practicalovertone", "app_state"]
+members = ["application", "practicalovertone", "app_state", "synth"]

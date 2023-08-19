@@ -15,9 +15,7 @@ use std::sync::{Arc, Mutex};
 use cpal::Stream;
 use egui::plot::{MarkerShape, PlotPoints};
 use ringbuffer::{AllocRingBuffer, RingBuffer};
-
-mod oscillator;
-use oscillator::WavetableOscillator;
+use synth::oscillator::WavetableOscillator;
 
 pub struct AppState {
     /// Current tick of the state

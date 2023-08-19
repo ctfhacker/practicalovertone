@@ -1,12 +1,11 @@
 [package]
-name = "app_state"
+name = "synth"
 version = "0.1.0"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+anyhow = "1.0.75"
 cpal = "0.15.2"
-egui = "0.22.0"
-ringbuffer = "0.14.2"
-synth = { version = "0.1.0", path = "../synth" }
+hound = "3.5.0"

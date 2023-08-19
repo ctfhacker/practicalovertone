@@ -64,5 +64,6 @@ fn main() {
         "PracticalOvertone",
         options,
         Box::new(|_| Box::new(App { library, state })),
-    );
+    )
+    .expect("Failed to launch app");
 }
