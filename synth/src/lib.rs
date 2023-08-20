@@ -4,7 +4,7 @@ pub mod oscillator;
 use std::time::Duration;
 
 /// Number of harmonics that a voice will produce
-const NUM_HARMONICS: usize = 10;
+const NUM_HARMONICS: usize = 20;
 
 /// The number of samples per second
 const SAMPLE_RATE: u32 = 44100;
@@ -33,11 +33,11 @@ pub trait Sampler: Send {
     }
 }
 
-use crate::oscillator::WavetableOscillator;
+use crate::oscillator::{sine_oscillator, Oscillator};
 
 #[derive(Clone)]
 struct Voice {
-    harmonics: [WavetableOscillator; NUM_HARMONICS],
+    harmonics: [Oscillator; NUM_HARMONICS],
 
     /// The current tilt ratio used to determine the amplitudes of harmonics
     /// Usually in the [-0.1, -16.0] range
@@ -49,7 +49,7 @@ struct Voice {
 
 impl Voice {
     pub fn new() -> Self {
-        let harmonics = [WavetableOscillator::new(SAMPLE_RATE); NUM_HARMONICS];
+        let harmonics = [sine_oscillator(SAMPLE_RATE); NUM_HARMONICS];
         let tilt = -3.0;
         let tilt_ratio = db_to_amplitude(tilt);
 
@@ -87,25 +87,36 @@ impl Sampler for Voice {
 }
 
 #[derive(Clone)]
-struct TwoVoices {
+struct Quartet {
     bass: Voice,
     bari: Voice,
+    lead: Voice,
+    tenor: Voice,
 }
 
-impl TwoVoices {
+impl Quartet {
     pub fn new() -> Self {
         let mut bass = Voice::new();
         let mut bari = Voice::new();
+        let mut lead = Voice::new();
+        let mut tenor = Voice::new();
         bass.set_frequency(220.0);
         bari.set_frequency(220.0 * 1.5);
+        lead.set_frequency(220.0 * 2.);
+        tenor.set_frequency(220.0 * 5. / 4.);
 
-        Self { bass, bari }
+        Self {
+            bass,
+            bari,
+            lead,
+            tenor,
+        }
     }
 }
 
-impl Sampler for TwoVoices {
+impl Sampler for Quartet {
     fn sample(&mut self) -> f64 {
-        self.bass.sample() + self.bari.sample()
+        0.2 * (self.bass.sample() + self.bari.sample() + self.lead.sample() + self.tenor.sample())
     }
 }
 
@@ -119,7 +130,7 @@ mod tests {
 
     #[test]
     fn it_works() {
-        let mut osc = TwoVoices::new();
+        let mut osc = Quartet::new();
         audio::play(osc.clone(), Duration::from_secs(1));
 
         osc.save("playme.wav", Duration::from_secs(1));

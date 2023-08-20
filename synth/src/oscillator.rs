@@ -6,7 +6,7 @@ use std::f64::consts::PI;
 const WAVE_TABLE_SIZE: usize = 64;
 
 #[derive(Copy, Clone)]
-pub struct WavetableOscillator {
+pub struct Oscillator {
     /// Number of samples to generate per second
     sample_rate: u32,
 
@@ -20,25 +20,33 @@ pub struct WavetableOscillator {
     index_increment: f64,
 }
 
-impl crate::Sampler for WavetableOscillator {
+impl crate::Sampler for Oscillator {
     fn sample(&mut self) -> f64 {
         self.get_sample()
     }
 }
 
-impl WavetableOscillator {
-    pub fn new(sample_rate: u32) -> Self {
+fn sine(index: usize, wave_table_size: usize) -> f64 {
+    (2.0 * PI * index as f64 / wave_table_size as f64).sin()
+}
+
+/// Get a sine oscillator with the given `sample_rate`
+pub fn sine_oscillator(sample_rate: u32) -> Oscillator {
+    Oscillator::new(sample_rate, sine)
+}
+
+impl Oscillator {
+    pub fn new(sample_rate: u32, func: fn(index: usize, wave_table_size: usize) -> f64) -> Self {
         let mut wave_table = [0.0; WAVE_TABLE_SIZE];
 
-        let mut i = 0;
-        loop {
-            if i >= WAVE_TABLE_SIZE {
-                break;
-            }
+        let wave_table_len = wave_table.len();
 
-            wave_table[i] = (2.0 * PI * i as f64 / WAVE_TABLE_SIZE as f64).sin();
-            i += 1;
+        // Populate the wave table with
+        for (index, elem) in wave_table.iter_mut().enumerate() {
+            *elem = func(index, wave_table_len);
         }
+
+        println!("{wave_table:?}");
 
         Self {
             sample_rate,
